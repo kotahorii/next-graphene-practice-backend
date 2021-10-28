@@ -3,13 +3,13 @@ from django.contrib.auth.models import User
 
 
 class Profile(models.Model):
-    user_prof = models.OneToOneField(
+    user = models.OneToOneField(
         User,
         related_name='profile',
         on_delete=models.CASCADE
     )
     followings = models.ManyToManyField(
-        User, related_name='profiles_followings', blank=True
+        User, related_name='followings', blank=True
     )
     created_on = models.DateTimeField(auto_now_add=True)
 

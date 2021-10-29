@@ -59,8 +59,9 @@ class CreateProfileMutation(graphene.Mutation):
 
     def mutate(root, info, **input):
         profile = Profile(
-            user=info.context.user.id
+            user_id=info.context.user.id
         )
+        profile.save()
         return CreateProfileMutation(profile=profile)
 
 
@@ -81,7 +82,7 @@ class UpdateProfileMutation(graphene.Mutation):
                 followings_set.append(followings_object)
             profile.followings.set(followings_set)
         profile.save()
-        
+
         return UpdateProfileMutation(profile=profile)
 
 

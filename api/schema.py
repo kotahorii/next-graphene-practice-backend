@@ -1,11 +1,8 @@
-from django.db import models
 import graphene
 from graphene_django.types import DjangoObjectType
 import graphql_jwt
-from graphene_django.filter import DjangoFilterConnectionField
 from graphql_jwt.decorators import login_required
 from .models import Profile, User
-from graphql_relay import from_global_id
 
 
 class UserType(DjangoObjectType):
@@ -25,13 +22,16 @@ class Query(graphene.ObjectType):
     profiles = graphene.List(ProfileType)
     profile = graphene.Field(ProfileType, id=graphene.Int())
 
+    @login_required
     def resolve_profile(root, info, **input):
         id = input.get('id')
         return Profile.objects.get(pk=id)
 
+    @login_required
     def resolve_users(root, info, **input):
         return User.objects.all()
 
+    @login_required
     def resolve_profiles(root, info, **input):
         return Profile.objects.all()
 
@@ -57,6 +57,7 @@ class CreateUserMutation(graphene.Mutation):
 class CreateProfileMutation(graphene.Mutation):
     profile = graphene.Field(ProfileType)
 
+    @login_required
     def mutate(root, info, **input):
         profile = Profile(
             user_id=info.context.user.id
@@ -72,6 +73,7 @@ class UpdateProfileMutation(graphene.Mutation):
 
     profile = graphene.Field(ProfileType)
 
+    @login_required
     def mutate(root, info, **input):
         profile = Profile.objects.get(id=input.get('id'))
 
